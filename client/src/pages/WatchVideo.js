@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState, useContext } from "react";
+import { useEffect, useRef, useState, useContext, useCallback } from "react";
 import Layout from "../components/Layout";
 import { AuthContext } from "../context/AuthContext";
 import toast from "react-hot-toast";
+
+const REQUIRED_TIME = 120; // 2 minutes
 
 export default function WatchVideo() {
   const { earnCoins } = useContext(AuthContext);
@@ -13,14 +15,49 @@ export default function WatchVideo() {
   const [completed, setCompleted] = useState(false);
   const [alreadyClaimed, setAlreadyClaimed] = useState(false);
 
-  const REQUIRED_TIME = 120; // 2 minutes
-
   // Format seconds to MM:SS
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
+
+  const stopTimer = useCallback(() => {
+    clearInterval(timerRef.current);
+    timerRef.current = null;
+  }, []);
+
+  const startTimer = useCallback(() => {
+    if (timerRef.current) return;
+
+    timerRef.current = setInterval(() => {
+      setWatchTime((prev) => {
+        const newTime = prev + 1;
+
+        if (newTime >= REQUIRED_TIME) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+          setCompleted(true);
+          toast.success("🎉 2 Minutes Completed! Claim reward.");
+        }
+
+        return newTime;
+      });
+    }, 1000);
+  }, []);
+
+  const onPlayerStateChange = useCallback(
+    (event) => {
+      // The 'window.YT' object might not be available on the first render,
+      // so we check for its existence.
+      if (window.YT && event.data === window.YT.PlayerState.PLAYING) {
+        startTimer();
+      } else {
+        stopTimer();
+      }
+    },
+    [startTimer, stopTimer]
+  );
 
   // Load YouTube API
   useEffect(() => {
@@ -40,39 +77,7 @@ export default function WatchVideo() {
         },
       });
     };
-  }, []);
-
-  const onPlayerStateChange = (event) => {
-    if (event.data === window.YT.PlayerState.PLAYING) {
-      startTimer();
-    } else {
-      stopTimer();
-    }
-  };
-
-  const startTimer = () => {
-    if (timerRef.current) return;
-
-    timerRef.current = setInterval(() => {
-      setWatchTime((prev) => {
-        const newTime = prev + 1;
-
-        if (newTime >= REQUIRED_TIME) {
-          clearInterval(timerRef.current);
-          timerRef.current = null;
-          setCompleted(true);
-          toast.success("🎉 2 Minutes Completed! Claim reward.");
-        }
-
-        return newTime;
-      });
-    }, 1000);
-  };
-
-  const stopTimer = () => {
-    clearInterval(timerRef.current);
-    timerRef.current = null;
-  };
+  }, [onPlayerStateChange]);
 
   const handleClaim = async () => {
     if (!completed) {
