@@ -17,9 +17,12 @@ connectDB();
 
 // 🔐 Security Middlewares
 app.use(cors({
-  origin: "http://localhost:3000", // change in production
-  credentials: true
+  origin: [
+    'http://localhost:3000',
+    'https://coinearnbyroshinth.vercel.app'
+  ]
 }));
+
 
 app.use(express.json());
 

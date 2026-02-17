@@ -5,22 +5,24 @@ import { AuthContext } from "../context/AuthContext";
 import toast from "react-hot-toast";
 
 export default function Poll() {
-  const { user } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
 
   const [poll, setPoll] = useState(null);
   const [selected, setSelected] = useState(null);
   const [voted, setVoted] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchPoll();
   }, []);
 
   const fetchPoll = async () => {
+    setLoading(true);
     try {
       const res = await API.get("/poll");
       setPoll(res.data);
-    } catch {
-      toast.error("No poll available");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -39,6 +41,7 @@ export default function Poll() {
 
       const updated = { ...user, coins: res.data.coins };
       localStorage.setItem("user", JSON.stringify(updated));
+      setUser(updated);
 
       setVoted(true);
       fetchPoll();
@@ -49,7 +52,31 @@ export default function Poll() {
     }
   };
 
-  if (!poll) return null;
+  if (loading) {
+    return (
+      <Layout>
+        <h2 className="text-cyan-400 text-2xl font-semibold mb-8">
+          🗳 Daily Poll
+        </h2>
+        <div className="bg-[#1e293b] p-8 rounded-2xl shadow-lg">
+          <p>Loading poll...</p>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!poll) {
+    return (
+      <Layout>
+        <h2 className="text-cyan-400 text-2xl font-semibold mb-8">
+          🗳 Daily Poll
+        </h2>
+        <div className="bg-[#1e293b] p-8 rounded-2xl shadow-lg">
+          <p>No poll available at the moment. Please check back later.</p>
+        </div>
+      </Layout>
+    );
+  }
 
   const totalVotes = poll.options.reduce(
     (sum, opt) => sum + opt.votes,
