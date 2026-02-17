@@ -67,7 +67,7 @@ export default function WatchVideo() {
 
     window.onYouTubeIframeAPIReady = () => {
       playerRef.current = new window.YT.Player("youtube-player", {
-        videoId: "6aYL1T4J9es", // 🔁 Replace with your video ID
+        videoId: "6aYL1T4J9es", 
         playerVars: {
           modestbranding: 1,
           rel: 0,
