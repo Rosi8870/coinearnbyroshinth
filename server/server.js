@@ -12,6 +12,9 @@ const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 
+// Trust proxy is required for rate limiting and secure cookies on platforms like Render
+app.set('trust proxy', 1);
+
 // 🔥 Connect MongoDB
 connectDB();
 
@@ -19,8 +22,10 @@ connectDB();
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://coinearnbyroshinth.vercel.app'
-  ]
+    'https://coinearnbyroshinth.vercel.app',
+    'https://www.coinearnbyroshinth.vercel.app'
+  ],
+  credentials: true
 }));
 
 
@@ -29,7 +34,7 @@ app.use(express.json());
 // 🚫 Rate Limiting (Anti-Spam)
 const limiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 30, // 30 requests per minute per IP
+  max: 100, // 100 requests per minute per IP
   message: "Too many requests. Try again later."
 });
 
