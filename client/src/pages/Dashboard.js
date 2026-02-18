@@ -1,6 +1,7 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
+import InstallPrompt from "../components/InstallPrompt";
 import { AuthContext } from "../context/AuthContext";
 import { Copy } from "lucide-react";
 import toast from "react-hot-toast";
@@ -22,7 +23,9 @@ export default function Dashboard() {
   };
 
   return (
-    <Layout>
+    <>
+      <InstallPrompt />
+      <Layout>
 
       {/* 🔥 Top Stats Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-10">
@@ -100,7 +103,8 @@ export default function Dashboard() {
 
       </div>
 
-    </Layout>
+      </Layout>
+    </>
   );
 }
 
