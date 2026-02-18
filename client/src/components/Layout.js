@@ -22,32 +22,56 @@ export default function Layout({ children }) {
         />
       )}
 
+      {/* Withdraw Modal */}
+      {showWithdraw && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
+          <div className="bg-[#111827] p-8 rounded-2xl w-[90%] max-w-md text-center border border-gray-700">
+            <h2 className="text-2xl font-semibold text-yellow-400 mb-4">
+              Withdrawal Notice
+            </h2>
+            <p className="text-gray-300 mb-4">
+              Your Current Balance:
+            </p>
+            <p className="text-3xl font-bold text-green-400 mb-6">
+              ₹ {rupees}
+            </p>
+            <p className="text-gray-400 mb-6">
+              Withdrawal will be available after election.
+            </p>
+            <button
+              onClick={() => setShowWithdraw(false)}
+              className="bg-cyan-500 hover:bg-cyan-600 px-6 py-2 rounded-lg transition"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Sidebar */}
       <aside
-        className={`
-          fixed md:static top-0 left-0 h-full w-64 bg-[#111827] border-r border-gray-800 p-6 z-50
-          transform transition-transform duration-300
-          ${open ? "translate-x-0" : "-translate-x-full"}
-          md:translate-x-0
-        `}
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#111827] p-6 transform ${
+          open ? "translate-x-0" : "-translate-x-full"
+        } md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col`}
       >
-        {/* Mobile Header */}
-        <div className="flex justify-between items-center mb-10 md:hidden">
-          <h2 className="text-2xl font-bold text-cyan-400">
-            Earn Here
-          </h2>
-          <button onClick={() => setOpen(false)}>
+        {/* Logo & Close Button */}
+        <div className="flex items-center justify-between mb-10">
+          <h1 className="text-2xl font-bold text-cyan-400">CoinEarn</h1>
+          <button className="md:hidden" onClick={() => setOpen(false)}>
             <X size={24} />
           </button>
         </div>
 
-        {/* Desktop Title */}
-        <h2 className="hidden md:block text-2xl font-bold text-cyan-400 mb-12">
-          Earn Here
-        </h2>
+        {/* User Info */}
+        <div className="mb-8 flex flex-col gap-2 items-start">
+          <div className="bg-yellow-500 text-black px-3 py-1.5 rounded-lg font-semibold text-sm">
+            {user?.coins || 0} Coins
+            <span className="ml-2 text-xs font-medium">(₹ {rupees})</span>
+          </div>
+        </div>
 
-        <nav className="space-y-4">
-
+        {/* Navigation */}
+        <nav className="flex-1 space-y-2">
           <NavItem to="/dashboard" icon={<LayoutDashboard size={18} />}>
             Dashboard
           </NavItem>
@@ -74,85 +98,39 @@ export default function Layout({ children }) {
             <Wallet size={18} />
             Withdraw
           </button>
-
         </nav>
+
+        {/* Logout Button */}
+        <div className="mt-auto">
+          <button
+            onClick={logout}
+            className="w-full bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg transition text-sm"
+          >
+            Logout
+          </button>
+        </div>
       </aside>
 
       {/* Main Section */}
       <main className="flex-1 p-4 md:p-10">
 
         {/* Top Bar */}
-        <div className="flex justify-between items-center mb-10">
+        <div className="flex items-center gap-4 mb-8">
 
-          {/* Mobile Menu Button */}
           <button
-            className="md:hidden"
+            className="md:hidden mr-2"
             onClick={() => setOpen(true)}
+            aria-label="Open menu"
           >
             <Menu size={26} />
           </button>
 
-          <h1 className="text-xl md:text-2xl font-semibold">
-            Welcome {user?.username}
-          </h1>
+          <h1 className="text-xl md:text-2xl font-semibold tracking-tight">Dashboard</h1>
 
-          {/* Coins + Rupees */}
-          <div className="flex items-center gap-4">
-
-            <div className="bg-yellow-500 text-black px-4 py-2 rounded-lg font-semibold text-sm md:text-base">
-              {user?.coins || 0} Coins
-              <span className="ml-2 text-xs font-medium">
-                (₹ {rupees})
-              </span>
-            </div>
-
-            <button
-              onClick={logout}
-              className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg transition text-sm md:text-base"
-            >
-              Logout
-            </button>
-
-          </div>
         </div>
 
         {children}
-
       </main>
-
-      {/* Withdraw Modal */}
-      {showWithdraw && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
-
-          <div className="bg-[#111827] p-8 rounded-2xl w-[90%] max-w-md text-center border border-gray-700">
-
-            <h2 className="text-2xl font-semibold text-yellow-400 mb-4">
-              Withdrawal Notice
-            </h2>
-
-            <p className="text-gray-300 mb-4">
-              Your Current Balance:
-            </p>
-
-            <p className="text-3xl font-bold text-green-400 mb-6">
-              ₹ {rupees}
-            </p>
-
-            <p className="text-gray-400 mb-6">
-              Withdrawal will be available after election.
-            </p>
-
-            <button
-              onClick={() => setShowWithdraw(false)}
-              className="bg-cyan-500 hover:bg-cyan-600 px-6 py-2 rounded-lg transition"
-            >
-              OK
-            </button>
-
-          </div>
-
-        </div>
-      )}
 
     </div>
   );

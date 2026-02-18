@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
   const dailyLogin = async () => {
     const res = await API.post("/rewards/daily-login");
 
-    if (res.data.coins) {
+    if (res.data.coins || res.data.dailyStreak) {
       const updated = { ...user, ...res.data };
       setUser(updated);
       localStorage.setItem("user", JSON.stringify(updated));

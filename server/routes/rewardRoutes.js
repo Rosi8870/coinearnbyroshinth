@@ -9,18 +9,31 @@ const router = express.Router();
 router.post("/daily-login", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-
-    const today = new Date().toDateString();
+    const today = new Date();
+    const todayStr = today.toDateString();
 
     if (
       user.lastDailyLogin &&
-      new Date(user.lastDailyLogin).toDateString() === today
+      new Date(user.lastDailyLogin).toDateString() === todayStr
     ) {
       return res.json({ message: "Already claimed today" });
     }
 
+    // Calculate streak
+    let newStreak = 1;
+    if (user.lastDailyLogin) {
+      const last = new Date(user.lastDailyLogin);
+      const diff = Math.floor((today - last) / (1000 * 60 * 60 * 24));
+      if (diff === 1) {
+        newStreak = (user.dailyStreak || 0) + 1;
+      } else {
+        newStreak = 1;
+      }
+    }
+
     user.coins += 10;
-    user.lastDailyLogin = new Date();
+    user.lastDailyLogin = today;
+    user.dailyStreak = newStreak;
 
     await user.save();
 
@@ -30,7 +43,7 @@ router.post("/daily-login", auth, async (req, res) => {
       coinsEarned: 10,
     });
 
-    res.json({ coins: user.coins });
+    res.json({ coins: user.coins, dailyStreak: user.dailyStreak, message: `Daily login successful! Streak: ${user.dailyStreak}` });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
