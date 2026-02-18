@@ -22,7 +22,7 @@ connectDB();
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://coinearnbyroshinth.vercel.app',
+    'https://coinearnnow.vercel.app',
     'https://www.coinearnbyroshinth.vercel.app'
   ],
   credentials: true
