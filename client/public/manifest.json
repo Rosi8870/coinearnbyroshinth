@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "CoinEarn",
+  "name": "CoinEarn – Earn Coins Easily",
+    "description": "Earn coins by completing tasks, watching videos, and more! Join the leaderboard and start earning now.",
   "icons": [
     {
       "src": "image-instruments-Earth-satellite-NASA-Suomi-National-2012.webp",
