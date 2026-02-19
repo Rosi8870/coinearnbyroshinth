@@ -98,6 +98,16 @@ export default function Layout({ children }) {
             <Wallet size={18} />
             Withdraw
           </button>
+
+        {/* Direct Link Ad Button */}
+        <a
+          href="https://omg10.com/4/10628162"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-green-400 hover:bg-green-400/10 transition font-semibold justify-center mt-4"
+        >
+          💸 Earn More
+        </a>
         </nav>
 
         {/* Logout Button */}
