@@ -16,6 +16,20 @@ export default function Missions() {
     { id: 'mission_video', title: 'Watch a Video', reward: 75, icon: <Play />, action: '/watch-video' },
   ];
 
+  const checkCompletion = (id) => {
+    const today = new Date().toDateString();
+    if (id === 'mission_spin') {
+      return user?.lastSpin && new Date(user.lastSpin).toDateString() === today;
+    }
+    if (id === 'mission_video') {
+      return user?.lastVideoReward && new Date(user.lastVideoReward).toDateString() === today;
+    }
+    if (id === 'mission_tap') {
+      return (user?.dailyTapCoins || 0) >= 20 && user?.lastTapDate && new Date(user.lastTapDate).toDateString() === today;
+    }
+    return false;
+  };
+
   const handleClaim = async (id, reward) => {
     try {
         const res = await API.post("/rewards/earn", { type: 'mission', amount: reward, missionId: id });
@@ -48,8 +62,11 @@ export default function Missions() {
               
               <button 
                 onClick={() => handleClaim(mission.id, mission.reward)}
-                disabled={user?.completedMissions?.some(m => m.missionId === mission.id && new Date(m.completedAt).toDateString() === new Date().toDateString())}
-                className="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg font-semibold transition flex items-center gap-2"
+                disabled={user?.completedMissions?.some(m => m.missionId === mission.id && new Date(m.completedAt).toDateString() === new Date().toDateString()) || !checkCompletion(mission.id)}
+                className={`px-4 py-2 rounded-lg font-semibold transition flex items-center gap-2 text-white ${
+                  user?.completedMissions?.some(m => m.missionId === mission.id && new Date(m.completedAt).toDateString() === new Date().toDateString()) ? 'bg-gray-600 cursor-not-allowed' :
+                  checkCompletion(mission.id) ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-600 cursor-not-allowed opacity-50'
+                }`}
               >
                 {user?.completedMissions?.some(m => m.missionId === mission.id && new Date(m.completedAt).toDateString() === new Date().toDateString()) ? 'Done' : 'Claim'}
               </button>

@@ -50,6 +50,8 @@ const userSchema = new mongoose.Schema(
     
     lastSpin: Date,
     lastScratch: Date,
+    dailyTapCoins: { type: Number, default: 0 },
+    lastTapDate: Date,
     completedMissions: [{
         missionId: String,
         completedAt: Date

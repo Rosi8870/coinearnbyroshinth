@@ -88,6 +88,9 @@ router.post("/login", async (req, res) => {
         lastSpin: user.lastSpin,
         lastScratch: user.lastScratch,
         completedMissions: user.completedMissions,
+        lastVideoReward: user.lastVideoReward,
+        dailyTapCoins: user.dailyTapCoins,
+        lastTapDate: user.lastTapDate,
       },
     });
   } catch (error) {

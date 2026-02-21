@@ -98,6 +98,12 @@ router.post("/earn", auth, async (req, res) => {
         user.lastScratch = new Date();
     } else if (type === "tap") {
         coinsToEarn = parseInt(amount) || 0;
+        
+        if (user.lastTapDate && new Date(user.lastTapDate).toDateString() !== today) {
+            user.dailyTapCoins = 0;
+        }
+        user.dailyTapCoins = (user.dailyTapCoins || 0) + coinsToEarn;
+        user.lastTapDate = new Date();
         // Optional: Add rate limiting logic here
     } else if (type === "mission") {
         if (!missionId) return res.status(400).json({ message: "Mission ID required" });
@@ -105,6 +111,20 @@ router.post("/earn", auth, async (req, res) => {
         const alreadyDone = user.completedMissions.some(m => m.missionId === missionId && new Date(m.completedAt).toDateString() === today);
         if (alreadyDone) return res.status(400).json({ message: "Mission already claimed today" });
  
+        if (missionId === 'mission_spin') {
+             if (!user.lastSpin || new Date(user.lastSpin).toDateString() !== today) {
+                 return res.status(400).json({ message: "Spin the wheel first!" });
+             }
+        } else if (missionId === 'mission_video') {
+             if (!user.lastVideoReward || new Date(user.lastVideoReward).toDateString() !== today) {
+                 return res.status(400).json({ message: "Watch a video first!" });
+             }
+        } else if (missionId === 'mission_tap') {
+             if ((user.dailyTapCoins || 0) < 20) {
+                 return res.status(400).json({ message: "Tap more to complete!" });
+             }
+        }
+
         coinsToEarn = parseInt(amount) || 0;
         user.completedMissions.push({ missionId, completedAt: new Date() });
     }
@@ -126,6 +146,9 @@ router.post("/earn", auth, async (req, res) => {
       lastSpin: user.lastSpin,
       lastScratch: user.lastScratch,
       completedMissions: user.completedMissions,
+      lastVideoReward: user.lastVideoReward,
+      dailyTapCoins: user.dailyTapCoins,
+      lastTapDate: user.lastTapDate,
       message: "Reward credited successfully"
     });
   } catch (error) {
