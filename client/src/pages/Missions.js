@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import Layout from '../components/Layout';
 import { AuthContext } from '../context/AuthContext';
 import API from "../services/api";
-import { CheckCircle, Play, RotateCw, Zap } from 'lucide-react';
+import { Play, RotateCw, Zap } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
