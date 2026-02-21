@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import InstallPrompt from "../components/InstallPrompt";
+import ActivityFeed from "../components/ActivityFeed";
 import { AuthContext } from "../context/AuthContext";
 import { Copy } from "lucide-react";
 import toast from "react-hot-toast";
@@ -26,6 +27,7 @@ export default function Dashboard() {
     <>
       <InstallPrompt />
       <Layout>
+        <ActivityFeed />
         <div className="max-w-2xl mx-auto w-full px-2 sm:px-4 md:px-0">
           {/* Welcome & Coins */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-6 mb-6">
@@ -40,7 +42,7 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <StatCard title="Total Coins" value={user?.coins} color="bg-yellow-500 text-black" />
             <StatCard title="Daily Streak" value={`🔥 ${user?.dailyStreak || 0}`} color="bg-orange-500 text-white" />
-            <StatCard title="Today's Tasks" value="3 Available" color="bg-cyan-500 text-white" />
+            <StatCard title="Today's Tasks" value="5 Available" color="bg-cyan-500 text-white" />
           </div>
 
           {/* Referral Code */}
@@ -78,6 +80,41 @@ export default function Dashboard() {
               action={() => navigate("/poll")}
               icon={<span className="text-pink-400">📊</span>}
               buttonText="Vote"
+            />
+            <FeatureCard
+              title="Spin Wheel"
+              desc="Win up to 50 coins"
+              action={() => navigate("/spin-wheel")}
+              icon={<span className="text-purple-400">🎡</span>}
+              buttonText="Spin"
+            />
+            <FeatureCard
+              title="Tap & Earn"
+              desc="Tap to earn coins"
+              action={() => navigate("/tap-game")}
+              icon={<span className="text-yellow-400"></span>}
+              buttonText="Play"
+            />
+            <FeatureCard
+              title="Scratch Card"
+              desc="Scratch to win"
+              action={() => navigate("/scratch-card")}
+              icon={<span className="text-gray-400">🎫</span>}
+              buttonText="Scratch"
+            />
+            <FeatureCard
+              title="Missions"
+              desc="Complete tasks"
+              action={() => navigate("/missions")}
+              icon={<span className="text-red-400">🚀</span>}
+              buttonText="View"
+            />
+            <FeatureCard
+              title="Jackpot"
+              desc="Win 15,000+ coins"
+              action={() => navigate("/jackpot")}
+              icon={<span className="text-yellow-500">🎰</span>}
+              buttonText="Buy Ticket"
             />
           </div>
         </div>

@@ -2,11 +2,20 @@ import { useContext, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { Menu, X, Wallet, LayoutDashboard, Trophy, Shield } from "lucide-react";
+import Contact from "../pages/Contact";
+import PrivacyPolicy from "../pages/PrivacyPolicy";
+import TermsConditions from "../pages/TermsConditions";
+import Disclaimer from "../pages/Disclaimer";
 
 export default function Layout({ children }) {
   const { user, logout } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
   const [showWithdraw, setShowWithdraw] = useState(false);
+  // Modal states for legal/info pages
+  const [showContact, setShowContact] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
 
   // 💰 Coin → Rupees Conversion (5 Coins = ₹1)
   const rupees = user?.coins ? (user.coins / 5).toFixed(2) : "0.00";
@@ -44,6 +53,43 @@ export default function Layout({ children }) {
             >
               OK
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Contact Modal */}
+      {showContact && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
+          <div className="bg-[#111827] p-8 rounded-2xl w-[90%] max-w-lg text-center border border-gray-700">
+            <Contact />
+            <button onClick={() => setShowContact(false)} className="mt-6 bg-cyan-500 hover:bg-cyan-600 px-6 py-2 rounded-lg transition">Close</button>
+          </div>
+        </div>
+      )}
+      {/* Privacy Policy Modal */}
+      {showPrivacy && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
+          <div className="bg-[#111827] p-8 rounded-2xl w-[90%] max-w-lg text-center border border-gray-700">
+            <PrivacyPolicy />
+            <button onClick={() => setShowPrivacy(false)} className="mt-6 bg-cyan-500 hover:bg-cyan-600 px-6 py-2 rounded-lg transition">Close</button>
+          </div>
+        </div>
+      )}
+      {/* Terms & Conditions Modal */}
+      {showTerms && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
+          <div className="bg-[#111827] p-8 rounded-2xl w-[90%] max-w-lg text-center border border-gray-700">
+            <TermsConditions />
+            <button onClick={() => setShowTerms(false)} className="mt-6 bg-cyan-500 hover:bg-cyan-600 px-6 py-2 rounded-lg transition">Close</button>
+          </div>
+        </div>
+      )}
+      {/* Disclaimer Modal */}
+      {showDisclaimer && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
+          <div className="bg-[#111827] p-8 rounded-2xl w-[90%] max-w-lg text-center border border-gray-700">
+            <Disclaimer />
+            <button onClick={() => setShowDisclaimer(false)} className="mt-6 bg-cyan-500 hover:bg-cyan-600 px-6 py-2 rounded-lg transition">Close</button>
           </div>
         </div>
       )}
@@ -99,15 +145,20 @@ export default function Layout({ children }) {
             Withdraw
           </button>
 
-        {/* Direct Link Ad Button */}
-        <a
-          href="https://omg10.com/4/10628162"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-green-400 hover:bg-green-400/10 transition font-semibold justify-center mt-4"
-        >
-          💸 Earn More
-        </a>
+          {/* Legal & Info Links as modal triggers */}
+          <button onClick={() => setShowContact(true)} className="w-full text-left px-4 py-3 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition">Contact</button>
+          <button onClick={() => setShowPrivacy(true)} className="w-full text-left px-4 py-3 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition">Privacy Policy</button>
+          <button onClick={() => setShowTerms(true)} className="w-full text-left px-4 py-3 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition">Terms & Conditions</button>
+          <button onClick={() => setShowDisclaimer(true)} className="w-full text-left px-4 py-3 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition">Disclaimer</button>
+          {/* Direct Link Ad Button */}
+          <a
+            href="https://omg10.com/4/10628162"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-green-400 hover:bg-green-400/10 transition font-semibold justify-center mt-4"
+          >
+            💸 Earn More
+          </a>
         </nav>
 
         {/* Logout Button */}

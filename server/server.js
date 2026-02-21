@@ -9,6 +9,7 @@ const authRoutes = require("./routes/authRoutes");
 const rewardRoutes = require("./routes/rewardRoutes");
 const pollRoutes = require("./routes/pollRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const gameRoutes = require("./routes/gameRoutes");
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/rewards", rewardRoutes);
 app.use("/api/poll", pollRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/game", gameRoutes);
 
 // 🏠 Root Route
 app.get("/", (req, res) => {

@@ -47,6 +47,13 @@ const userSchema = new mongoose.Schema(
       type: Date,
     },
     lastPollVote: Date,
+    
+    lastSpin: Date,
+    lastScratch: Date,
+    completedMissions: [{
+        missionId: String,
+        completedAt: Date
+    }],
 
     role: {
       type: String,

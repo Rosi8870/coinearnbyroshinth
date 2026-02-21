@@ -8,6 +8,15 @@ import Leaderboard from "./pages/Leaderboard";
 import AdminPanel from "./pages/AdminPanel";
 import WatchVideo from "./pages/WatchVideo";
 import Poll from "./pages/Poll";
+import SpinWheel from "./pages/SpinWheel";
+import TapGame from "./pages/TapGame";
+import ScratchCard from "./pages/ScratchCard";
+import Missions from "./pages/Missions";
+import Jackpot from "./pages/Jackpot";
+import Contact from "./pages/Contact";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsConditions from "./pages/TermsConditions";
+import Disclaimer from "./pages/Disclaimer";
 
 import PrivateRoute from "./components/PrivateRoute";
 import AdminRoute from "./components/AdminRoute";
@@ -25,6 +34,10 @@ function App() {
           {/* 🌍 Public Routes */}
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-conditions" element={<TermsConditions />} />
+          <Route path="/disclaimer" element={<Disclaimer />} />
 
           {/* 🔒 Protected Routes */}
           <Route
@@ -50,6 +63,51 @@ function App() {
             element={
               <PrivateRoute>
                 <Poll />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/spin-wheel"
+            element={
+              <PrivateRoute>
+                <SpinWheel />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/tap-game"
+            element={
+              <PrivateRoute>
+                <TapGame />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/scratch-card"
+            element={
+              <PrivateRoute>
+                <ScratchCard />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/missions"
+            element={
+              <PrivateRoute>
+                <Missions />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/jackpot"
+            element={
+              <PrivateRoute>
+                <Jackpot />
               </PrivateRoute>
             }
           />

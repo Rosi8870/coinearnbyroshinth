@@ -51,10 +51,11 @@ router.post("/daily-login", auth, async (req, res) => {
 
 // Generic Reward
 router.post("/earn", auth, async (req, res) => {
-  const { type, watchTime } = req.body;
+  const { type, watchTime, amount, missionId } = req.body;
 
   const user = await User.findById(req.user.id);
   let coinsToEarn = 0;
+  const today = new Date().toDateString();
 
   if (type === "video") {
     coinsToEarn = 40; // Define reward amount on the server
@@ -66,8 +67,6 @@ router.post("/earn", auth, async (req, res) => {
       });
     }
 
-    const today = new Date().toDateString();
-
     if (
       user.lastVideoReward &&
       new Date(user.lastVideoReward).toDateString() === today
@@ -78,13 +77,50 @@ router.post("/earn", auth, async (req, res) => {
     }
 
     user.lastVideoReward = new Date();
+  } else if (type === "spin") {
+      if (user.lastSpin && new Date(user.lastSpin).toDateString() === today) {
+          return res.status(400).json({ message: "Already spun today" });
+      }
+      coinsToEarn = amount || 0;
+      if (coinsToEarn > 50) coinsToEarn = 50; // Server-side cap
+      user.lastSpin = new Date();
+  } else if (type === "scratch") {
+      if (user.lastScratch && new Date(user.lastScratch).toDateString() === today) {
+          return res.status(400).json({ message: "Already scratched today" });
+      }
+      coinsToEarn = amount || 0;
+      if (coinsToEarn > 100) coinsToEarn = 100; // Server-side cap
+      user.lastScratch = new Date();
+  } else if (type === "tap") {
+      coinsToEarn = amount || 0;
+      // Optional: Add rate limiting logic here
+  } else if (type === "mission") {
+      if (!missionId) return res.status(400).json({ message: "Mission ID required" });
+      
+      const alreadyDone = user.completedMissions.some(m => m.missionId === missionId && new Date(m.completedAt).toDateString() === today);
+      if (alreadyDone) return res.status(400).json({ message: "Mission already claimed today" });
+
+      coinsToEarn = amount || 0;
+      user.completedMissions.push({ missionId, completedAt: new Date() });
   }
 
   user.coins += coinsToEarn;
   await user.save();
+  
+  // Log task
+  if (coinsToEarn > 0) {
+      await TaskLog.create({
+          userId: user._id,
+          type: type,
+          coinsEarned: coinsToEarn,
+      });
+  }
 
   res.json({
     coins: user.coins,
+    lastSpin: user.lastSpin,
+    lastScratch: user.lastScratch,
+    completedMissions: user.completedMissions,
     message: "Reward credited successfully"
   });
 });

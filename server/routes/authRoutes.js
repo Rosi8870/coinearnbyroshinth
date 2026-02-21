@@ -84,6 +84,9 @@ router.post("/login", async (req, res) => {
         coins: user.coins,
         referralCode: user.referralCode,
         role: user.role,
+        lastSpin: user.lastSpin,
+        lastScratch: user.lastScratch,
+        completedMissions: user.completedMissions,
       },
     });
   } catch (error) {
