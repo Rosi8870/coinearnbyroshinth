@@ -9,11 +9,22 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setLoading(false);
+    const loadUser = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        API.defaults.headers.common["x-auth-token"] = token;
+        try {
+          const res = await API.get("/auth/me");
+          setUser(res.data);
+        } catch (err) {
+          console.error("Failed to load user", err);
+          logout();
+        }
+      }
+      setLoading(false);
+    };
+
+    loadUser();
   }, []);
 
   const register = async (data) => {
@@ -25,7 +36,7 @@ export const AuthProvider = ({ children }) => {
     const res = await API.post("/auth/login", data);
 
     localStorage.setItem("token", res.data.token);
-    localStorage.setItem("user", JSON.stringify(res.data.user));
+    API.defaults.headers.common["x-auth-token"] = res.data.token;
 
     setUser(res.data.user);
     toast.success("Login successful!");
@@ -33,6 +44,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.clear();
+    delete API.defaults.headers.common["x-auth-token"];
     setUser(null);
   };
 
@@ -42,7 +54,6 @@ export const AuthProvider = ({ children }) => {
     if (res.data.coins || res.data.dailyStreak) {
       const updated = { ...user, ...res.data };
       setUser(updated);
-      localStorage.setItem("user", JSON.stringify(updated));
       toast.success(res.data.message);
     } else {
       toast(res.data.message);
@@ -55,7 +66,6 @@ export const AuthProvider = ({ children }) => {
 
     const updated = { ...user, coins: res.data.coins };
     setUser(updated);
-    localStorage.setItem("user", JSON.stringify(updated));
 
     toast.success(res.data.message);
   } catch (err) {

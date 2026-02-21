@@ -23,7 +23,7 @@ const upgrades = {
 };
 
 export default function TapGame() {
-  const { user, setUser, earnCoins } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
 
   const multitapLevel = user?.multitapLevel || 1;
   const energyLimitLevel = user?.energyLimitLevel || 1;
@@ -69,7 +69,7 @@ export default function TapGame() {
 
         try {
           // Send to backend
-          await earnCoins("tap", amountToSync);
+          await API.post("/rewards/earn", { type: "tap", amount: amountToSync });
         } catch (err) {
           console.error("Failed to sync coins", err);
           // In a real app, you might want to add these back to pending
@@ -78,7 +78,7 @@ export default function TapGame() {
     }, 2000); // Sync every 2 seconds
 
     return () => clearInterval(syncInterval);
-  }, [earnCoins]);
+  }, []);
 
   const handleInteraction = (e) => {
     if (energy <= 0) return;
